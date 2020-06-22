@@ -2,16 +2,11 @@
 ## Getting Started
 ### Prerequisites
 - Download <a href="https://www.python.org/downloads/">Python</a>
-- Have the following Python libraries: Pandas, Numpy, Matplotlib (It may be automatically installed when you run the file but I'm not sure)
+- Have the following Python libraries: csv, Pandas, Matplotlib
 
 ### Instructions
-1) Download .py file into the folder of your choice
-2) Enter into the folder/directory via the command prompt: cd <file_path>
-3) Type 'python analyse_acc_data.py > (*choose_a_file_name*).**txt**' OR 'python analyse_acc_data.py > (*choose_a_file_name*).**csv**'
-4) Enter the path to your excel file in the command prompt. For example, /Users/Sean/Desktop/Train Data (Cashew > Botanic).xlsx
-5) Wait for a few minutes. If no error occurs, you got it!
-
-### What Should Happen
-1) A file labelled '(*choose_a_file_name*).txt' will be created in your folder
-2) A folder labelled 'Graphs' will be created with all images of the graphs stored in the folder as a .png file.
-They will be labelled according to the name of your Excel sheets.
+1) Download the Jupyter Notebook file
+2) Copy the Jupyter Notebook file into the folder where your the csv file exists. And rename your csv file as "Station A > Station B.csv"
+3) Open the Jupyter Notebook, follow the instructions and run the cells.
+4) When running the file, there will be times to ask you to input the file name. Just enter the renamed file name.
+5) You can view the printed data results and view the graphs in Jupyter Notebook. At the same time, a "Graph" folder will be created in the same folder as your csv file containing the graphs (a-t, v-t, s-t).
