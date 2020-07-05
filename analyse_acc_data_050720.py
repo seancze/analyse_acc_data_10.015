@@ -1,58 +1,26 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[313]:
+# In[ ]:
 
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import nbconvert
 import math
 
 
-# In[2]:
+# In[ ]:
 
 
-# !pip install ipython
-
-
-# In[3]:
-
-
-# fig, ax1 = plt.subplots()
-
-# color = 'tab:red'
-# ax1.set_xlabel('time (s)')
-# ax1.set_ylabel('Acceleration_x (ms^-1)', color=color)
-# ax1.plot(time, acc2_x, color=color)
-# ax1.tick_params(axis='y', labelcolor=color)
-
-# ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-
-# color = 'tab:blue'
-# ax2.set_ylabel('Acceleration_y (ms^-1)', color=color)  # we already handled the x-label with ax1
-# ax2.plot(time, acc2_y, color=color)
-# ax2.tick_params(axis='y', labelcolor=color)
-
-# fig.tight_layout()  # otherwise the right y-label is slightly clipped
-# plt.show()
-
-# sns.regplot(x="Timestamp", y="X", data=acc2_modified, x_bins = 7, order=1);
-
-
-# In[358]:
-
-
-# user_input = input("Please input the location of your excel file: \n")
-user_input = input()
+user_input = input("Please input the location of your excel file: \n")
 # print(f"You inputted: {user_input}. File is now running...")
 
 acceleration_data = pd.read_excel(user_input, sheet_name=None)
 
 
-# In[211]:
+# In[ ]:
 
 
 def format_headers(df):
@@ -62,7 +30,7 @@ def format_headers(df):
     return df
 
 
-# In[212]:
+# In[ ]:
 
 
 def get_total_speed(velocity):
@@ -127,8 +95,7 @@ def get_max_v(acc, method = 's'):
     return max_v, accum_v
 
 
-# In[213]:
-
+# In[ ]:
 
 
 # ARCHIVED
@@ -162,7 +129,7 @@ def get_total_dist(accum_v, method = 's'):
     return total_dist
 
 
-# In[214]:
+# In[ ]:
 
 
 def mkdir_p(mypath):
@@ -179,7 +146,7 @@ def mkdir_p(mypath):
         else: raise
 
 
-# In[353]:
+# In[ ]:
 
 
 def plot_graph(df, title, method = 's'):
@@ -187,29 +154,25 @@ def plot_graph(df, title, method = 's'):
     if type(df.iloc[0][0]) != float:
         df = format_headers(df)
         
-    acc_y = df["Average Y"]
+    acc_y = df["Average Y"].dropna(how='all')
 #     acc_y_calibrated = df["Average Y calibrated"]
     
-
-
     try: 
-    #         Remove all rows where all values are blank > Retrieve the last value
+#         Remove all rows where all values are blank > Retrieve the last value
         last_value_of_t = df["Timestamp"].dropna(how='all').iloc[-1]
-        t = df["Timestamp"]
-
-    # If there's only 1 "Timestamp" in the excel sheet, then our x-axis will just equal to it
+        t = df["Timestamp"].dropna(how='all')
+    
+    # If there's only 1 "Timestamp" in the excel sheet, then our x-axis will just equal to it. 'pass' because values assigned to t already is correct
         if type(last_value_of_t) == float:
-            t = df["Timestamp"]
+            pass
         else:
-    #             Convert series to a list
-            time_formatted = list(last_value_of_t)
+    # Retrieve index of time that is not 'NaN'. This is equivalent to retrieving maximum time (I.e. Most number of rows)
+            time_formatted = [i for i, el in enumerate(list(t.iloc[-1])) if not math.isnan(el)]
+            idx = time_formatted[0] # This works because there should only be 1 value that is 'NaN' 
+    # If there is 2 or more, this means that all the time end at the same row / time which is highly unlikely. Even if it does happen, I will still be retrieving the idx of the max t
+    # t = Col with most number of rows
+            t = df["Timestamp"].dropna(how='all').iloc[:, idx]
 
-
-            # Retrieve maximum time (I.e. Most number of rows)
-            max_t = [t for t in time_formatted if not math.isnan(t)]
-            idx = time_formatted.index(max_t[0])
-            # t = Col with most number of rows
-            t = df["Timestamp"].dropna(how='all').iloc[:,idx]
     except:
         print("Please ensure that there is no column labelled 'Timestamp' that is empty. If so, please remove the header, 'Timestamp'")
 #     Obtain an array of negative values
@@ -270,7 +233,7 @@ def plot_graph(df, title, method = 's'):
     return acc_y_mean, acc_y
 
 
-# In[356]:
+# In[ ]:
 
 
 for i, title in enumerate(acceleration_data):
