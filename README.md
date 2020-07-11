@@ -5,7 +5,10 @@
 4) Enter the path to your excel file in the command prompt. For example, /Users/Desktop/Train Data (Cashew > Botanic).xlsx
 5) Wait for a few minutes. If no error occurs, you got it!
 
+A sample output csv file has been provided under 'example_results.csv'
+
 ### Error Debugging
 - Check that you have a heading labelled 'Timestamp', 'Y' and 'Average Y' respectively.
+- Check that there is data in 'Average Y' for all rows in the **longest 'Timestamp' column** (I.e. Last index of 'Average Y' should not end before last index of 'Timestamp')
 - Check that all data collected is flushed to the left of the Excel sheet. I.e. Column A should **not** be blank.
 - Check that the name of your Excel sheet do not any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)

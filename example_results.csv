@@ -1,0 +1,31 @@
+Please input the location of your excel file: 
+
+    Title, Acceleration_cut_off_time, Mean_Acceleration, Max_Velocity, Total_distance, Total_time_taken
+    Jurong East to Bukit Batok, 23.909, 0.633411805176594, 24.13135723750841, 2586.618113416945, 159.658
+    Method used: s
+    
+
+    Title, Acceleration_cut_off_time, Mean_Acceleration, Max_Velocity, Total_distance, Total_time_taken
+    ® Bukit Batok to Jurong East, 22.035, 0.7720188811911912, 18.924577298049243, 2092.734220452698, 154.963
+    Method used: s
+    
+
+    Title, Acceleration_cut_off_time, Mean_Acceleration, Max_Velocity, Total_distance, Total_time_taken
+    Bukit Batok to Bukit Gombak, 42.006, 0.5923603243402084, 24.571760024232574, 1547.7243938917318, 113.795
+    Method used: s
+    
+
+    Title, Acceleration_cut_off_time, Mean_Acceleration, Max_Velocity, Total_distance, Total_time_taken
+    ® Bukit Gombak to Bukit Batok, 35.902, 0.5931549673034459, 21.30618328774815, 1232.5149378611145, 113.028
+    Method used: s
+    
+
+    Title, Acceleration_cut_off_time, Mean_Acceleration, Max_Velocity, Total_distance, Total_time_taken
+    Bukit Gombak to Choa Chu Kang, 19.349, 0.7273809288581506, 21.40702174346565, 2804.5879684129313, 205.839
+    Method used: s
+    
+
+    Title, Acceleration_cut_off_time, Mean_Acceleration, Max_Velocity, Total_distance, Total_time_taken
+    ® Choa Chu Kang to Bukit Gombak, 44.666, 0.5624089313212867, 33.97920149886293, 5438.374734486564, 230.726
+    Method used: s
+    

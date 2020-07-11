@@ -149,13 +149,64 @@ def mkdir_p(mypath):
 # In[ ]:
 
 
+type(acceleration_data['Jurong East to Bukit Batok'].iloc[:,0])
+
+
+# In[ ]:
+
+
+trial = acceleration_data['Jurong East to Bukit Batok'].iloc[:,0]
+
+
+# In[ ]:
+
+
+trial = trial.dropna()
+
+
+# In[ ]:
+
+
+type(trial.iloc[-1])
+
+
+# In[ ]:
+
+
+trial.iloc[-1]
+
+
+# In[ ]:
+
+
+trial.iloc[156]
+
+
+# In[ ]:
+
+
+trial.index[int(trial.iloc[-1])]
+
+
+# In[ ]:
+
+
+idx = trial[trial == trial.iloc[-1]].index[0]
+
+
+# In[ ]:
+
+
+trial.iloc[:idx]
+
+
+# In[ ]:
+
+
 def plot_graph(df, title, method = 's'):
 #     Format headers as long as the first row is not a numerical value
     if type(df.iloc[0][0]) != float:
         df = format_headers(df)
-        
-    acc_y = df["Average Y"].dropna(how='all')
-#     acc_y_calibrated = df["Average Y calibrated"]
     
     try: 
 #         Remove all rows where all values are blank > Retrieve the last value
@@ -175,6 +226,15 @@ def plot_graph(df, title, method = 's'):
 
     except:
         print("Please ensure that there is no column labelled 'Timestamp' that is empty. If so, please remove the header, 'Timestamp'")
+        
+
+#  To ensure that num rows of acc_y correspond to t
+#  Note: This only works if t.iloc[-1] is a number and not an error like 'nan'
+    last_idx = t[t == t.iloc[-1]].index[0]
+    acc_y = df["Average Y"].dropna(how='all').iloc[:last_idx]
+#   acc_y_calibrated = df["Average Y calibrated"]
+        
+
 #     Obtain an array of negative values
     negative_values = [value for value in acc_y if value < 0]
 
@@ -238,4 +298,10 @@ def plot_graph(df, title, method = 's'):
 
 for i, title in enumerate(acceleration_data):
     plot_graph(acceleration_data[title], title)
+
+
+# In[ ]:
+
+
+
 
