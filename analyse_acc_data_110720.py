@@ -149,60 +149,6 @@ def mkdir_p(mypath):
 # In[ ]:
 
 
-type(acceleration_data['Jurong East to Bukit Batok'].iloc[:,0])
-
-
-# In[ ]:
-
-
-trial = acceleration_data['Jurong East to Bukit Batok'].iloc[:,0]
-
-
-# In[ ]:
-
-
-trial = trial.dropna()
-
-
-# In[ ]:
-
-
-type(trial.iloc[-1])
-
-
-# In[ ]:
-
-
-trial.iloc[-1]
-
-
-# In[ ]:
-
-
-trial.iloc[156]
-
-
-# In[ ]:
-
-
-trial.index[int(trial.iloc[-1])]
-
-
-# In[ ]:
-
-
-idx = trial[trial == trial.iloc[-1]].index[0]
-
-
-# In[ ]:
-
-
-trial.iloc[:idx]
-
-
-# In[ ]:
-
-
 def plot_graph(df, title, method = 's'):
 #     Format headers as long as the first row is not a numerical value
     if type(df.iloc[0][0]) != float:
@@ -298,10 +244,4 @@ def plot_graph(df, title, method = 's'):
 
 for i, title in enumerate(acceleration_data):
     plot_graph(acceleration_data[title], title)
-
-
-# In[ ]:
-
-
-
 
