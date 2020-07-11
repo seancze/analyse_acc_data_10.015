@@ -14,10 +14,10 @@ import math
 # In[ ]:
 
 
-user_input = input("Please input the location of your excel file: \n")
+# user_input = input("Please input the location of your excel file: \n")
 # print(f"You inputted: {user_input}. File is now running...")
 
-acceleration_data = pd.read_excel(user_input, sheet_name=None)
+acceleration_data = pd.read_excel(input(), sheet_name=None)
 
 
 # In[ ]:
