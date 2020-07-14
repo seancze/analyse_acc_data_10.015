@@ -3,7 +3,6 @@
 2) Pip installed together with Python. It should be included in the Python installation. Else, you may find the instructions to download pip [here](https://phoenixnap.com/kb/install-pip-windows).
 Note: Link is for installation on Windows
 3) Ensure you have the following modules installed. Else you can install them via 'pip install <Insert module name>'.
-
    - pandas
    - matplotlib
    - xlrd
