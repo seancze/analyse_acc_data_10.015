@@ -4,9 +4,9 @@
 Note: Link is for installation on Windows
 3) Ensure you have the following modules installed. Else you can install them via 'pip install <Insert module name>'.
 
-   - pandas  
-   - matplotlib  
-   - xlrd  
+   - pandas
+   - matplotlib
+   - xlrd
 
 ### Instructions
 1) Download the repository into the folder of your choice and extract the contents of the folder
