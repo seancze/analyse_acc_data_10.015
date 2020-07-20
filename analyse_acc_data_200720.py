@@ -8,15 +8,19 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import time
+start_time = time.time()
 
 
 # In[ ]:
 
 
-# user_input = input("Please input the location of your excel file: \n")
-# print(f"You inputted: {user_input}. File is now running...")
+user_input = input("Please input the location of your excel file: \n")
+print(f'''
+You inputted: {user_input}.
+File is now running...''')
 
-acceleration_data = pd.read_excel(input(), sheet_name=None)
+acceleration_data = pd.read_excel(user_input, sheet_name=None)
 
 
 # In[ ]:
@@ -154,7 +158,7 @@ def plot_graph(df, title, method = 's'):
         df = format_headers(df)
     
     try: 
-#         Remove all rows where all values are blank > Retrieve the last value
+#         Remove all rows where all values are blank then Retrieve the last value
         last_value_of_t = df["Timestamp"].dropna(how='all').iloc[-1]
         t = df["Timestamp"].dropna(how='all')
     
@@ -166,36 +170,45 @@ def plot_graph(df, title, method = 's'):
             time_formatted = [i for i, el in enumerate(list(t.iloc[-1])) if not math.isnan(el)]
             idx = time_formatted[0] # This works because there should only be 1 value that is 'NaN' 
     # If there is 2 or more, this means that all the time end at the same row / time which is highly unlikely. Even if it does happen, I will still be retrieving the idx of the max t
+    
+    
     # t = Col with most number of rows
             t = df["Timestamp"].dropna(how='all').iloc[:, idx]
-
+        
     except:
         print("Please ensure that there is no column labelled 'Timestamp' that is empty. If so, please remove the header, 'Timestamp'")
         
 
-#  To ensure that num rows of acc_y correspond to t
 #  Note: This only works if t.iloc[-1] is a number and not an error like 'nan'
     last_idx = t[t == t.iloc[-1]].index[0]
     acc_y = df["Average Y"].dropna(how='all').iloc[:last_idx]
+    
+#     Find the idx of the first value of acc_y. Ensures that if first value of t happens to be blank for whatever reason, it will not be picked.
+    first_float_idx = next((i for i, x in enumerate(acc_y) if isinstance(x, float)), None)
+    start_idx = next((i for i, x in enumerate(acc_y) if (x-acc_y.iloc[first_float_idx]) > 0.01), None)
+    
+#     Re-assign both variables to ensure that num rows of acc_y correspond to t
+    acc_y = df["Average Y"].dropna(how='all').iloc[start_idx:last_idx]
+    t = t.iloc[start_idx:last_idx]
 #   acc_y_calibrated = df["Average Y calibrated"]
         
 
 #     Obtain an array of negative values
-    negative_values = [value for value in acc_y if value < 0]
+    negative_value_list = [value for value in acc_y if value < 0]
 
 #     Retrieve the index of the first negative value
-    negative_value = acc_y[acc_y == negative_values[0]].index[0]
+    negative_value = acc_y[acc_y == negative_value_list[0]].index[0]
     
-#     If the length from start to negative_value is less than 1000, retrieve next negative value
+#     If the length from start to negative_value is less than 10% of all data points, retrieve next negative value
 # This ensures that negative values that appear early on does not cause threshold to anomalously be placed incorrectly
     until_negative_list = acc_y[:negative_value-1]
     i = 1
-    while len(until_negative_list) < 500:
-        negative_value = acc_y[acc_y == negative_values[i]].index[0]
+    while len(until_negative_list) < (len(t) * 0.1):
+        negative_value = acc_y[acc_y == negative_value_list[i]].index[0]
         until_negative_list = acc_y[:negative_value-1]
         i += 1
     cut_off_t = t[negative_value-1] # Same as: t[len(until_negative_list)]
-
+    
 #     print(len(until_negative_list), i)
     
     acc_y_mean = sum(until_negative_list / len(until_negative_list))
@@ -224,10 +237,28 @@ def plot_graph(df, title, method = 's'):
 
     max_v, accum_v = get_max_v(acc_y, method)
     total_dist = get_total_dist(accum_v, method)
+    
+    try:
+#   Retrieve start station
+        station_start = title.split(' to ')[0]
+#   Retrieve end station
+        station_end = title.split(' to ')[1]
+    except:
+        print('''
+        Ensure that the name of your excel sheet is labelled <station_start> to <station_end>
+        The ' to ' in between both station names is important!
+        ''')
+    
+    
+
+    total_time_taken = t.iloc[-1]
+#     We cannot simply retrieve last value of t as the first value of t is NOT 0
+    total_time_offset = t.iloc[-1] - t.iloc[0]
+    data = [station_start, station_end, total_dist, total_time_taken, total_time_offset, acc_y_mean, cut_off_t, method]
     print(f'''
-    Title, Acceleration_cut_off_time, Mean_Acceleration, Max_Velocity, Total_distance, Total_time_taken
-    {title}, {cut_off_t}, {acc_y_mean}, {max_v}, {total_dist}, {t.iloc[-1]}
-    Method used: {method}
+    'Station_start', 'Station_end', 'Total Distance (m)', 'Total Time Taken (s)', 'Time Taken w Offset (s)' 'Mean Acceleration (ms^-2)', 'Cut-off t (s)'
+    {station_start}, {station_end}, {total_dist}, {total_time_taken}, {total_time_offset} {acc_y_mean}, {cut_off_t}
+    Method used: {method}, where 's' = Sinusoidal and 't' = Trapezoidal
     ''')
     
 #     Save charts into the directory 'Graph' under the file_name labelled 'title'
@@ -235,12 +266,50 @@ def plot_graph(df, title, method = 's'):
     mkdir_p(output_dir)
     plt.savefig(f'{output_dir}/{title}.png')
     
-    return acc_y_mean, acc_y
+    return data
 
 
 # In[ ]:
 
 
+all_data = {'title': ['Station_start', 'Station_end', 'Total Distance', 'Total Time Taken (s)', 'Total Time w Offset (s)', 'Mean Acceleration', 'Cut-off t (s)', 'Method Used']}
 for i, title in enumerate(acceleration_data):
-    plot_graph(acceleration_data[title], title)
+    all_data[i] = plot_graph(acceleration_data[title], title)
+
+
+# In[ ]:
+
+
+file_type = input("Would you like to output to a .csv or .txt file? Type 'csv' or 'txt': ").lower()
+
+# Ensure input is either 'csv' or 'txt'
+while True:
+#     If file_type is neither 'csv' nor 'txt' > Ask for input again
+    if file_type != 'csv' and file_type != 'txt':
+        print(file_type.lower())
+        file_type = input("Invalid input. Please input 'csv' or 'txt' to output data to a .csv or .txt file respectively: ")
+    else:
+        break
+        
+        
+file_name = input("Please input the name of your file: ")
+
+
+if file_type == 'csv':
+    f = file_name + '.' + file_type
+    
+    with open(f, 'w', newline='') as file:
+        for i in all_data:
+            file.write(', '.join(str(el) for el in all_data[i]))
+            file.write('\n')
+else:
+    f = file_name + '.' + file_type
+    with open(f, 'w', newline='') as file:
+        for i in all_data:
+            file.write(', '.join(str(el) for el in all_data[i]))
+            file.write('\n')
+
+print(f'''
+File completed! :)
+Total Time Taken: {(time.time() - start_time):.1f}s''')
 
