@@ -27,7 +27,9 @@ A sample output csv file and sample graphs have been provided under the folder '
 
 ### Error Debugging
 - Check that you have a heading labelled 'Timestamp', 'Y' and 'Average Y' respectively.
-- Check that the name of your excel file is formatted as follows *<station_start> to <station_end>*
+![Image showing key values required in Excel file. These are: 'Timestamp', 'Y' and 'Average Y' respectively.](https://github.com/seancze/analyse_acc_data_10.015/blob/master/assets/images_readme/Sample%20Excel%20File.png "Sample Excel File")
+- Check that the name of your excel sheet is formatted as follows *<station_start> to <station_end>*
+![Image showing format of the name of the excel sheet. I.e. <station_start> to <station_end>](https://github.com/seancze/analyse_acc_data_10.015/blob/master/assets/images_readme/Sample%20Workbook%20name.png "Sample Workbook Name")
 Note: The **' to '** is extremely important for the code to retrieve the start and end station respectively!
 - Check that there is data in 'Average Y' for all rows in the **longest 'Timestamp' column** (I.e. Last index of 'Average Y' should not end before last index of 'Timestamp')
 - For Windows: Check that the name of your Excel sheet do not any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)
