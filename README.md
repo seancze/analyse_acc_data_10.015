@@ -32,5 +32,5 @@ A sample output csv file and sample graphs have been provided under the folder '
 ![Image showing format of the name of the excel sheet. I.e. <station_start> to <station_end>](https://github.com/seancze/analyse_acc_data_10.015/blob/master/assets/images_readme/Sample%20Workbook%20name.png "Sample Workbook Name")
 Note: The **' to '** is extremely important for the code to retrieve the start and end station respectively!
 - Check that there is data in 'Average Y' for all rows in the **longest 'Timestamp' column** (I.e. Last index of 'Average Y' should not end before last index of 'Timestamp')
-- For Windows: Check that the name of your Excel sheet do not any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)
+- For Windows: Check that the name of your Excel sheet does not contain any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)
 - Check that all data collected is flushed to the left of the Excel sheet. I.e. Column A should **not** be blank.
