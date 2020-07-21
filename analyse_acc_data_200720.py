@@ -70,7 +70,7 @@ def get_max_v(acc, method = 's'):
 #             accum_v.append(sum(d_v))
             
 #         Just to speed up the loop so that I don't always have to sum up the array and check with max_v
-            if i < 800:
+            if i < len(cleaned_acc)*0.2:
                 continue
 
             if sum(d_v) > max_v:
@@ -88,7 +88,7 @@ def get_max_v(acc, method = 's'):
                 accum_v.append(velocity + accum_v[-1]) 
             
 #         Just to speed up the loop so that I don't always have to sum up the array and check with max_v
-            if i < 800:
+            if i < len(cleaned_acc)*0.2:
                 continue
 
             if sum(d_v) > max_v:
@@ -254,9 +254,9 @@ def plot_graph(df, title, method = 's'):
     total_time_taken = t.iloc[-1]
 #     We cannot simply retrieve last value of t as the first value of t is NOT 0
     total_time_offset = t.iloc[-1] - t.iloc[0]
-    data = [station_start, station_end, total_dist, total_time_taken, total_time_offset, acc_y_mean, cut_off_t, method]
+    data = [station_start, station_end, total_dist, total_time_taken, total_time_offset, max_v, acc_y_mean, cut_off_t, method]
     print(f'''
-    'Station_start', 'Station_end', 'Total Distance (m)', 'Total Time Taken (s)', 'Time Taken w Offset (s)' 'Mean Acceleration (ms^-2)', 'Cut-off t (s)'
+    'Station_start', 'Station_end', 'Total Distance (m)', 'Total Time Taken (s)', 'Time Taken w Offset (s)', 'Max Velocity (ms^-1)', 'Mean Acceleration (ms^-2)', 'Cut-off t (s)'
     {station_start}, {station_end}, {total_dist}, {total_time_taken}, {total_time_offset} {acc_y_mean}, {cut_off_t}
     Method used: {method}, where 's' = Sinusoidal and 't' = Trapezoidal
     ''')
@@ -272,7 +272,7 @@ def plot_graph(df, title, method = 's'):
 # In[ ]:
 
 
-all_data = {'title': ['Station_start', 'Station_end', 'Total Distance', 'Total Time Taken (s)', 'Total Time w Offset (s)', 'Mean Acceleration', 'Cut-off t (s)', 'Method Used']}
+all_data = {'title': ['Station_start', 'Station_end', 'Total Distance', 'Total Time Taken (s)', 'Total Time w Offset (s)', 'Max Velocity (ms^-1)', 'Mean Acceleration', 'Cut-off t (s)', 'Method Used']}
 for i, title in enumerate(acceleration_data):
     all_data[i] = plot_graph(acceleration_data[title], title)
 
