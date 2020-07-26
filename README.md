@@ -8,7 +8,7 @@ Note: Link is for installation on Windows
    - xlrd
    - openpyxl
 4) Ensure that **all your data (.csv files) are in one folder**, and that they are named according to the following format:
-   **<station_start> to <station_end> <n>**, where n represents the number of times you have collected this data. For example, 'Bukit Batok to JE 2'.
+   **<station_start> to <station_end> n**, where n represents the number of times you have collected this data. For example, 'Bukit Batok to JE 2'.
    Note: No number is required for the first collection of results
 
 ### Instructions
