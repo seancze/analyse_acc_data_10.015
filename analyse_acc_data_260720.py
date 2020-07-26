@@ -11,25 +11,157 @@ import math
 import time
 start_time = time.time()
 
+# Used for loading csv files into excel
+import openpyxl
+from openpyxl.utils.dataframe import dataframe_to_rows
+import os
+import glob
+
 
 # In[ ]:
 
 
-user_input = input("Please input the location of your excel file: \n")
-print(f'''
-You inputted: {user_input}.
-File is now running...''')
+def hasNumbers(inputString):
+    return any(char.isdigit() for char in inputString)
 
-acceleration_data = pd.read_excel(user_input, sheet_name=None)
+
+# In[ ]:
+
+
+def sorted_dict(file_names):
+    '''
+    Input: Requires a list of .csv files
+    Output:
+    - A dictionary with values sorted according to the train trip
+    - file_names excluding '.csv'
+    
+    '''
+
+    d = {}
+
+    # Retrieve file_names
+    file_names = ''.join(all_files).split('.csv')[:-1]
+
+
+    for name in file_names:
+
+    # If name of file as a digit, find index of digit
+        if hasNumbers(name):
+
+    # Find the index of the digit
+            idx = [char.isdigit() for char in name].index(True)
+
+    # Split by the index and store the front end as the key
+    # Note: '-1' is to exclude the whitespace as well
+            key = name[:idx-1]
+            if key in d:
+                d[key].append(name)
+            else:
+                d[key] = [name]
+        else:
+            if name in d:
+                d[name].append(name)
+            else:
+                d[name] = [name]
+
+    
+    return d, file_names
+
+
+# In[ ]:
+
+
+def csv_to_excel(d, wb, acc_header):
+    '''
+    Input: A dictionary of .csv file names, Excel workbook, Header of acceleration values to calculate average acceleration values
+    Output: Data imported into excel workbook
+    '''
+
+
+    # For each key in dictionary
+    for i, key in enumerate(d):
+
+    #     Convert the respective files into a list of df
+        df_list = [pd.read_csv(f'{file}.csv') for file in d[key]]
+
+    #     Concatenate the dfs into 1
+        concat_df = pd.concat(df_list, axis = 1)
+
+    #     Create a new column: Average of all acceleration data
+        concat_df['Average Y'] = concat_df[acc_header].mean(axis=1)
+
+    #     Store key as title of file
+        title = key
+
+    #     Create ws with the title == key of dictionary
+        ws = wb.create_sheet(index=i, title=title)
+
+    #     Import the df into the excel sheet
+        for r in dataframe_to_rows(concat_df, index=False, header=True):
+            ws.append(r)
+
+    try:
+        wb.save(f'{excel_wb_name}.xlsx')
+        print(f"Excel workbook created at {user_dir}")
+    except:
+        print('''
+        Excel file failed to create. 
+        Please check that the name given does not contain the following special characters:
+        / \ : * ? " < > | ''')
+
+
+# In[ ]:
+
+
+# Create new Excel workbook
+wb = openpyxl.Workbook()
+# Just to remove the spare sheet
+wb.remove(wb.active)
+
+# Retrieve directory containing all .csv files
+user_dir = input("Please input the path to the directory containing all the .csv files: ")
+path = 'c:\\'
+extension = 'csv'
+os.chdir(user_dir)
+all_files = glob.glob('*.{}'.format(extension))
+d, file_names = sorted_dict(all_files)
+
+# Ask User for header of timestamp, of acc values
+t_header = input("Please input the name of the header for the timestamp column (CASE-SENSITIVE): ")
+acc_header = input("Please input the name of the header for the acceleration column (CASE-SENSITIVE): ")
+excel_wb_name = input("An excel workbook will be created. Please input your preferred name (CASE-SENSITIVE): ")
+print("File is running...")
+
+try:
+    csv_to_excel(d, wb, acc_header)
+except:
+    print("Please ensure that the folder only contains .csv files for the accelerometer readings.")
+
+
+# In[ ]:
+
+
+print(f'''
+Reading Excel file...''')
+
+acceleration_data = pd.read_excel(f'{excel_wb_name}.xlsx', sheet_name=None, header=None)
 
 
 # In[ ]:
 
 
 def format_headers(df):
-    header = df.iloc[0]
-    df = df[1:]
-    df.columns = header
+    
+# Format headers as long as the first row is not a numerical value
+# Note: Headers are not considered as the first row
+# Note: '.item()' is to convert numpy types to native Python types
+    try:
+        if type(df.iloc[0, 0].item()) == float:
+            pass
+    except:
+        header = df.iloc[0]
+        df = df[1:]
+        df.columns = header
     return df
 
 
@@ -152,16 +284,18 @@ def mkdir_p(mypath):
 # In[ ]:
 
 
-def plot_graph(df, title, method = 's'):
-#     Format headers as long as the first row is not a numerical value
-    if type(df.iloc[0][0]) != float:
-        df = format_headers(df)
+def retrieve_x_and_y_axes(df):
+    '''
+    Returns the x and y axes for the plotting of graph
+    x-axis: Time
+    y-axis: Average Acceleration
+    '''
     
     try: 
-#         Remove all rows where all values are blank then Retrieve the last value
-        last_value_of_t = df["Timestamp"].dropna(how='all').iloc[-1]
-        t = df["Timestamp"].dropna(how='all')
-    
+    # Remove all rows where all values are blank then Retrieve the last value    
+        last_value_of_t = df[t_header].dropna(how='all').iloc[-1]
+        t = df[t_header].dropna(how='all')
+
     # If there's only 1 "Timestamp" in the excel sheet, then our x-axis will just equal to it. 'pass' because values assigned to t already is correct
         if type(last_value_of_t) == float:
             pass
@@ -170,36 +304,46 @@ def plot_graph(df, title, method = 's'):
             time_formatted = [i for i, el in enumerate(list(t.iloc[-1])) if not math.isnan(el)]
             idx = time_formatted[0] # This works because there should only be 1 value that is 'NaN' 
     # If there is 2 or more, this means that all the time end at the same row / time which is highly unlikely. Even if it does happen, I will still be retrieving the idx of the max t
-    
-    
+
+
     # t = Col with most number of rows
-            t = df["Timestamp"].dropna(how='all').iloc[:, idx]
-        
+            t = df[t_header].dropna(how='all').iloc[:, idx]
     except:
         print("Please ensure that there is no column labelled 'Timestamp' that is empty. If so, please remove the header, 'Timestamp'")
         
 
-#  Note: This only works if t.iloc[-1] is a number and not an error like 'nan'
+# Note: This only works if t.iloc[-1] is a number and not an error like 'nan'
     last_idx = t[t == t.iloc[-1]].index[0]
     acc_y = df["Average Y"].dropna(how='all').iloc[:last_idx]
     
-#     Find the idx of the first value of acc_y. Ensures that if first value of t happens to be blank for whatever reason, it will not be picked.
+# Find the idx of the first value of acc_y. Ensures that if first value of t happens to be blank for whatever reason, it will not be picked.
     first_float_idx = next((i for i, x in enumerate(acc_y) if isinstance(x, float)), None)
     start_idx = next((i for i, x in enumerate(acc_y) if (x-acc_y.iloc[first_float_idx]) > 0.01), None)
     
-#     Re-assign both variables to ensure that num rows of acc_y correspond to t
-    acc_y = df["Average Y"].dropna(how='all').iloc[start_idx:last_idx]
+# Re-assign both variables to ensure that num rows of acc_y correspond to t
+    acc_y = df["Average Y"].iloc[start_idx:last_idx]
     t = t.iloc[start_idx:last_idx]
 #   acc_y_calibrated = df["Average Y calibrated"]
-        
 
-#     Obtain an array of negative values
+    return t, acc_y
+
+
+# In[ ]:
+
+
+def plot_graph(df, title, method = 's'):
+    
+    df = format_headers(df)
+    
+    t, acc_y = retrieve_x_and_y_axes(df)
+
+# Obtain an array of negative values
     negative_value_list = [value for value in acc_y if value < 0]
 
-#     Retrieve the index of the first negative value
+# Retrieve the index of the first negative value
     negative_value = acc_y[acc_y == negative_value_list[0]].index[0]
     
-#     If the length from start to negative_value is less than 10% of all data points, retrieve next negative value
+# If the length from start to negative_value is less than 10% of all data points, retrieve next negative value
 # This ensures that negative values that appear early on does not cause threshold to anomalously be placed incorrectly
     until_negative_list = acc_y[:negative_value-1]
     i = 1
@@ -248,8 +392,6 @@ def plot_graph(df, title, method = 's'):
         Ensure that the name of your excel sheet is labelled <station_start> to <station_end>
         The ' to ' in between both station names is important!
         ''')
-    
-    
 
     total_time_taken = t.iloc[-1]
 #     We cannot simply retrieve last value of t as the first value of t is NOT 0

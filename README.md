@@ -6,14 +6,17 @@ Note: Link is for installation on Windows
    - pandas
    - matplotlib
    - xlrd
-   - time
+   - openpyxl
 
 ### Instructions
 1) Download the repository into the folder of your choice and extract the contents of the folder
 2) Enter into the folder/directory via the command prompt: cd <file_path>
-3) Type `python analyse_acc_data_200720.py`
+3) Type `python analyse_acc_data_260720.py`
 4) Follow the respective prompts in cmd line. 
-- Enter the path to your excel file in the command prompt. For example, /Users/Desktop/Train Data (Cashew > Botanic).xlsx
+- Enter the path to the directory containing all your .csv files in the command prompt. For example, /Users/Desktop/Train Data/
+- Enter the header name for the 'Timestamp' and 'Acceleration' column
+- Enter your preferred name for an Excel file which will be created
+Note: For Windows: Check that none of these characters are used: / \ : * ? " < > |
 - Enter 'csv' or 'txt' to output to a .csv or .txt file respectively
 - Enter name of file
 5) Wait for a few minutes. If no error occurs, you got it!
@@ -32,5 +35,5 @@ A sample output csv file and sample graphs have been provided under the folder '
 ![Image showing format of the name of the excel sheet. I.e. <station_start> to <station_end>](https://github.com/seancze/analyse_acc_data_10.015/blob/master/assets/images_readme/Sample%20Workbook%20name.png "Sample Workbook Name")
 Note: The **' to '** is extremely important for the code to retrieve the start and end station respectively!
 - Check that there is data in 'Average Y' for all rows in the **longest 'Timestamp' column** (I.e. Last index of 'Average Y' should not end before last index of 'Timestamp')
-- For Windows: Check that the name of your Excel sheet does not contain any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)
+- For Windows: Check that the name of your Excel sheet do not any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)
 - Check that all data collected is flushed to the left of the Excel sheet. I.e. Column A should **not** be blank.
