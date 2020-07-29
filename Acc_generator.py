@@ -279,6 +279,7 @@ def run():
     
     df = csv2df(file_name)
     df = dfFormat(df)
+    df.to_csv("formatted.csv")
     Total_Distance_Travelled = distance(df)
     Max_Velocity = maxVelocity(df)
     CutOff_Time, Average_Acceleration = acc(df)
