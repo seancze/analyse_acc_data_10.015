@@ -33,6 +33,6 @@ A sample output csv file and sample graphs have been provided under the folder '
 
 ### Error Debugging
 - Check that the name of your csv files is formatted as follows *<station_start> to <station_end>*
-![Image showing format of the name of the excel sheet. I.e. <station_start> to <station_end>](https://github.com/seancze/analyse_acc_data_10.015/blob/master/assets/images_readme/Sample%20Workbook%20name.png "Sample Workbook Name")
+![Image showing format of the name of the excel sheet. I.e. <station_start> to <station_end>](https://github.com/seancze/analyse_acc_data_10.015/blob/master/assets/images_readme/Sample%20csv%20file%20name.png "Sample Workbook Name")
 Note: The **' to '** is extremely important for the code to retrieve the start and end station respectively!
 - For Windows: Check that the name of your csv files do not contain any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)
