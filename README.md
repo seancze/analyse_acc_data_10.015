@@ -14,7 +14,7 @@ Note: Link is for installation on Windows
 ### Instructions
 1) Download the repository into the folder of your choice and extract the contents of the folder
 2) Enter into the folder/directory via the command prompt: cd <file_path>
-3) Type `python analyse_acc_data_260720.py`
+3) Type `python analyse_acc_data_300720.py`
 4) Follow the respective prompts in cmd line. 
 - Enter the path to the directory containing all your .csv files in the command prompt. For example, /Users/Desktop/Train Data/
 - Enter the header name for the 'Timestamp' and 'Acceleration' column
@@ -32,11 +32,7 @@ A sample output csv file and sample graphs have been provided under the folder '
 - **Mean Acceleration (ms^-2)** is taken as the average of all instantaneous acceleration readings from the start time after offset to the cut-off time. I.e. Range of values taken is from **start_idx to end_idx**.
 
 ### Error Debugging
-- Check that you have a heading labelled 'Timestamp', 'Y' and 'Average Y' respectively.
-![Image showing key values required in Excel file. These are: 'Timestamp', 'Y' and 'Average Y' respectively.](https://github.com/seancze/analyse_acc_data_10.015/blob/master/assets/images_readme/Sample%20Excel%20File.png "Sample Excel File")
-- Check that the name of your excel sheet is formatted as follows *<station_start> to <station_end>*
+- Check that the name of your csv files is formatted as follows *<station_start> to <station_end>*
 ![Image showing format of the name of the excel sheet. I.e. <station_start> to <station_end>](https://github.com/seancze/analyse_acc_data_10.015/blob/master/assets/images_readme/Sample%20Workbook%20name.png "Sample Workbook Name")
 Note: The **' to '** is extremely important for the code to retrieve the start and end station respectively!
-- Check that there is data in 'Average Y' for all rows in the **longest 'Timestamp' column** (I.e. Last index of 'Average Y' should not end before last index of 'Timestamp')
-- For Windows: Check that the name of your Excel sheet do not any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)
-- Check that all data collected is flushed to the left of the Excel sheet. I.e. Column A should **not** be blank.
+- For Windows: Check that the name of your csv files do not contain any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)

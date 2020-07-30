@@ -88,8 +88,12 @@ def csv_to_excel(d, wb, acc_header):
         concat_df = pd.concat(df_list, axis = 1)
 
     #     Create a new column: Average of all acceleration data
-        concat_df['Average Y'] = concat_df[acc_header].mean(axis=1)
-
+        try:
+            concat_df['Average Y'] = concat_df[acc_header].mean(axis=1)
+        except:
+    #         If only have 1 set of readings, still need to create a new column
+            concat_df['Average Y'] = concat_df[acc_header].mean()
+      
     #     Store key as title of file
         title = key
 
@@ -134,7 +138,8 @@ print("File is running...")
 
 try:
     csv_to_excel(d, wb, acc_header)
-except:
+except Exception as e:
+    print(e)
     print("Please ensure that the folder only contains .csv files for the accelerometer readings.")
 
 
@@ -143,7 +148,6 @@ except:
 
 print(f'''
 Reading Excel file...''')
-
 acceleration_data = pd.read_excel(f'{excel_wb_name}.xlsx', sheet_name=None, header=None)
 
 
@@ -323,6 +327,9 @@ def retrieve_x_and_y_axes(df):
 # Re-assign both variables to ensure that num rows of acc_y correspond to t
     acc_y = df["Average Y"].iloc[start_idx:last_idx]
     t = t.iloc[start_idx:last_idx]
+    
+#     Ensure that timestamp starts from 0
+    t = t.subtract(df[t_header].iloc[0])
 #   acc_y_calibrated = df["Average Y calibrated"]
 
     return t, acc_y
@@ -338,24 +345,33 @@ def plot_graph(df, title, method = 's'):
     t, acc_y = retrieve_x_and_y_axes(df)
 
 # Obtain an array of negative values
-    negative_value_list = [value for value in acc_y if value < 0]
-
-# Retrieve the index of the first negative value
-    negative_value = acc_y[acc_y == negative_value_list[0]].index[0]
+    negative_value_list = acc_y[acc_y < 0]
     
-# If the length from start to negative_value is less than 10% of all data points, retrieve next negative value
-# This ensures that negative values that appear early on does not cause threshold to anomalously be placed incorrectly
-    until_negative_list = acc_y[:negative_value-1]
+#     Only do this if there are negative values
     i = 1
-    while len(until_negative_list) < (len(t) * 0.1):
-        negative_value = acc_y[acc_y == negative_value_list[i]].index[0]
-        until_negative_list = acc_y[:negative_value-1]
-        i += 1
-    cut_off_t = t[negative_value-1] # Same as: t[len(until_negative_list)]
+    if len(negative_value_list) > 0:
+    # Retrieve the index of the first negative value
+        cut_off_idx = negative_value_list.index[0]
+        
+
+    # If the length from start to negative_value is less than 10% of all data points, retrieve next negative value
+    # This ensures that negative values that appear early on does not cause threshold to anomalously be placed incorrectly
+        while cut_off_idx < (len(t) * 0.2):
+            cut_off_idx = negative_value_list.index[i]
+            i += 1
+    
+        cut_off_t = t[cut_off_idx]
+    else:
+        cut_off_idx = acc_y.index[0]
+        while cut_off_idx < (len(t) * 0.2):
+            cut_off_idx = acc_y.index[i]
+            i += 1
+        cut_off_t = t[cut_off_idx]
+        
     
 #     print(len(until_negative_list), i)
     
-    acc_y_mean = sum(until_negative_list / len(until_negative_list))
+    acc_y_mean = sum(acc_y[:cut_off_idx] / (cut_off_idx+1)) # '+1' because idx starts from 0
     fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(12,6))
 
 #     Uncalibrated
