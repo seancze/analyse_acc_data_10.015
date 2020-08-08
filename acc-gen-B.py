@@ -610,9 +610,10 @@ def main():
 
 
 uchoice = 1
+uchoice = int(input("Enter [1] to start and [0] to exit"))
 while (uchoice == 1):
-    uchoice = int(input("Enter [1] to start and [0] to exit"))
     main()
+    uchoice = int(input("Enter [1] to start and [0] to exit"))
 
 
 # In[ ]:
