@@ -15,7 +15,7 @@
 
 # # 1) Import modules
 
-# In[1]:
+# In[ ]:
 
 
 import pandas as pd
@@ -38,7 +38,7 @@ from scipy.signal import lfilter
 # Function parameters:\
 # None
 
-# In[2]:
+# In[ ]:
 
 
 def getInputForColumns():
@@ -82,7 +82,7 @@ def getInputForColumns():
 # Function parameters:\
 # (String) a1 -- Column ID in String Format
 
-# In[3]:
+# In[ ]:
 
 
 def a1ToIndex(a1, isZeroIndex):
@@ -106,7 +106,7 @@ def a1ToIndex(a1, isZeroIndex):
 # |```output_path```|the path for output| |
 # 
 
-# In[4]:
+# In[ ]:
 
 
 def csv2df(file_name, title, output_path):
@@ -160,7 +160,7 @@ def csv2df(file_name, title, output_path):
 
 # ## Function to remove data for when train is stationary
 
-# In[5]:
+# In[ ]:
 
 
 def truncateStationaryValues(df):
@@ -196,7 +196,7 @@ def truncateStationaryValues(df):
 
 # ## Function to Generate Time Elapsed
 
-# In[6]:
+# In[ ]:
 
 
 def timeElapsed(df, TimestampInMs): 
@@ -213,7 +213,7 @@ def timeElapsed(df, TimestampInMs):
 
 # ## Function to Generate Time Interval
 
-# In[7]:
+# In[ ]:
 
 
 def timeInterval(df):
@@ -233,7 +233,7 @@ def timeInterval(df):
 # shift_value: the value to shift all acceleration values 
 # <p> in this application, the shift value from the experiment results, is approximately to be (initial accelration)/2</p>
 
-# In[8]:
+# In[ ]:
 
 
 def accAdjust(df):
@@ -268,7 +268,7 @@ def accAdjust(df):
 
 # ## Function to generate V-btw2
 
-# In[9]:
+# In[ ]:
 
 
 def dv(df):
@@ -285,7 +285,7 @@ def dv(df):
 
 # ## Function to generate V(t)
 
-# In[10]:
+# In[ ]:
 
 
 def vt(df):
@@ -303,7 +303,7 @@ def vt(df):
 
 # ## Function to generate S-btw2
 
-# In[11]:
+# In[ ]:
 
 
 def ds(df):
@@ -321,7 +321,7 @@ def ds(df):
 
 # ## Function to generate S(t)
 
-# In[12]:
+# In[ ]:
 
 
 def st(df):
@@ -339,7 +339,7 @@ def st(df):
 
 # ## Function to integrate all the functions in this section
 
-# In[13]:
+# In[ ]:
 
 
 def dfFormat(df, dfFormatArgs):
@@ -361,7 +361,7 @@ def dfFormat(df, dfFormatArgs):
 
 # ## Total Distance Travelled
 
-# In[14]:
+# In[ ]:
 
 
 def distance(df):
@@ -374,7 +374,7 @@ def distance(df):
 
 # ## Total Time Taken
 
-# In[15]:
+# In[ ]:
 
 
 def totalTime(df):
@@ -387,7 +387,7 @@ def totalTime(df):
 
 # ## Max Velocity
 
-# In[16]:
+# In[ ]:
 
 
 def maxVelocity(df):
@@ -403,7 +403,7 @@ def maxVelocity(df):
 # Variables: <br>
 # negative_acc_list: a list of the index of which the acceleration value is nagetive
 
-# In[17]:
+# In[ ]:
 
 
 def acc(df):
@@ -428,7 +428,7 @@ def acc(df):
 
 # ## Max Acceleration
 
-# In[18]:
+# In[ ]:
 
 
 def maxAcc(df):
@@ -441,7 +441,7 @@ def maxAcc(df):
 
 # ## Function to integrate all the functions in this section
 
-# In[19]:
+# In[ ]:
 
 
 def data(df):
@@ -467,7 +467,7 @@ def data(df):
 
 # ## Graph a-t
 
-# In[20]:
+# In[ ]:
 
 
 def plotAcc(df,title,CutOff_Time, output_path):
@@ -489,7 +489,7 @@ def plotAcc(df,title,CutOff_Time, output_path):
 
 # ## Graph v-t
 
-# In[21]:
+# In[ ]:
 
 
 def plotVelocity(df,title,Max_Velocity, output_path):
@@ -510,7 +510,7 @@ def plotVelocity(df,title,Max_Velocity, output_path):
 
 # ## Graph s-t
 
-# In[22]:
+# In[ ]:
 
 
 def plotDisplacement(df,title,Total_Distance_Travelled, output_path):
@@ -531,7 +531,7 @@ def plotDisplacement(df,title,Total_Distance_Travelled, output_path):
 
 # # 6) Calculating and Generating Output
 
-# In[23]:
+# In[ ]:
 
 
 def mkdir_p(mypath):
@@ -550,7 +550,7 @@ def mkdir_p(mypath):
 
 # ## Run it all (Main function)
 
-# In[24]:
+# In[ ]:
 
 
 def main():
@@ -571,7 +571,8 @@ def main():
     print("Results will be available at: {}".format(output_path))
     
     # Get the title of the file
-    title = file_name.split('.')[0]
+    title = file_name.split('.')[-2]
+    print(title)
     if ('/' in title):
         additionalSplit = title.split('/')
         title = additionalSplit[len(additionalSplit) - 1]
@@ -605,10 +606,13 @@ def main():
     plotDisplacement(df, title, Total_Distance_Travelled, output_path)
 
 
-# In[28]:
+# In[ ]:
 
 
-main()
+uchoice = 1
+while (uchoice == 1):
+    uchoice = int(input("Enter [1] to start and [0] to exit"))
+    main()
 
 
 # In[ ]:
