@@ -140,6 +140,7 @@ def csv2df(file_name, title, output_path):
             each_line = []
             for column_index in column_indexes:
                 each_line.append(item[column_index])
+                # If the line above doesn't work, it could mean that the .csv file is using delimiters other than a "comma"
             each_line.insert(1,0)
             each_line.insert(2,"Acceleration")
             formatted_csv.writerow(each_line)
@@ -168,7 +169,7 @@ def truncateStationaryValues(df):
     # You can change the n to any odd number. If you choose "3", then the start index will be 1 and the end index will be 1.
     # Might consider doing this automatically later
     
-    threshold = 0.02 # Change threshold here
+    threshold = 0.02 # Change threshold here. Typically 0.02
     
     from copy import deepcopy
     
@@ -553,10 +554,14 @@ def mkdir_p(mypath):
 
 
 def main():
-    # Note: truncateStationaryValue has a -e*9.81 implemented there so it will need to be skipped if the data given is already in ms^(-2)
+    # To do
+    # - truncateStationaryValue has a -e*9.81 implemented there so it will need to be skipped if the data given is already in ms^(-2)
+    # - need to add that option above
+    # - semicolon delimiters support
+    # - variable set and saving 
     
     # User Input
-    output_dir = "/" + input("Please input the reletive path ending with the desired folder name for output: ") # i.e. "../output/out-1"
+    output_dir = "/" + input("Please input the relative path ending with the desired folder name for output: ") # i.e. "../output/out-1"
     file_name = input("Please input the relative path to csv file: ") # i.e. "example_data/UC_EXPO_first.csv" or "../data/file-1.csv"
     timestampType = input("Is the timestamp in milliseconds (ms) or in seconds (s)?").lower()
     isInMs = (timestampType == "ms")
@@ -571,7 +576,7 @@ def main():
     
     # Get the title of the file
     title = file_name.split('.')[-2]
-    print(title)
+    #print(title) # Debug
     if ('/' in title):
         additionalSplit = title.split('/')
         title = additionalSplit[len(additionalSplit) - 1]
@@ -605,7 +610,7 @@ def main():
     plotDisplacement(df, title, Total_Distance_Travelled, output_path)
 
 
-# In[26]:
+# In[ ]:
 
 
 uchoice = 1
