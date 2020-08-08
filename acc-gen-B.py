@@ -69,7 +69,7 @@ def getInputForColumns():
         column_ids[2] = buffer
         buffer = input("Acceleration Z: ")
         column_ids[3] = buffer
-        buffer = input("Confirm entry? [Y]/[N]: ")
+        buffer = input("Confirm entry? [y]/[n]: ")
         if (buffer.lower() == "y"):
             isFinal = True
     
@@ -164,12 +164,12 @@ def csv2df(file_name, title, output_path):
 # In[5]:
 
 
-def truncateStationaryValues(df):
+def truncateStationaryValues(df, Threshold):
     # Currently using a rolling average n of 5. Hence the use of "3" as the start index in range.
     # You can change the n to any odd number. If you choose "3", then the start index will be 1 and the end index will be 1.
     # Might consider doing this automatically later
     
-    threshold = 0.02 # Change threshold here. Typically 0.02
+    threshold = Threshold # Change threshold here. Typically 0.02
     
     from copy import deepcopy
     
@@ -237,7 +237,7 @@ def timeInterval(df):
 # In[8]:
 
 
-def accAdjust(df):
+def accAdjust(df, SmoothStep):
     '''Generate the Acc-Y-Adjusted and take the shift value into account'''
     
     # Column index of Acc-Y-Adjusted: 7
@@ -250,7 +250,7 @@ def accAdjust(df):
         
     # Filter to remove noise
     # Use the previous adjusted values in acc_Y
-    n = 15  # the larger n is, the smoother curve will be
+    n = SmoothStep  # the larger n is, the smoother curve will be
     b = [1.0 / n] * n # b, numerator coefficient vector in a 1-D sequence
     a = 1 # a, denominator coefficient vector in a 1-D sequence
     acc_Y_filtered = lfilter(b,a,acc_Y)
@@ -344,12 +344,12 @@ def st(df):
 
 
 def dfFormat(df, dfFormatArgs):
-    df = truncateStationaryValues(df)
+    df = truncateStationaryValues(df, dfFormatArgs["Threshold"])
     df = df.reset_index(drop=True)
     
     timeElapsed(df, dfFormatArgs["TimestampInMs"])
     timeInterval(df)
-    accAdjust(df)
+    accAdjust(df, dfFormatArgs["SmoothStepValue"])
     dv(df)
     vt(df)
     ds(df)
@@ -565,7 +565,9 @@ def main():
     file_name = input("Please input the relative path to csv file: ") # i.e. "example_data/UC_EXPO_first.csv" or "../data/file-1.csv"
     timestampType = input("Is the timestamp in milliseconds (ms) or in seconds (s)?").lower()
     isInMs = (timestampType == "ms")
-    dfFormatArgs = {"TimestampInMs": isInMs}
+    smoothStepValue = int(input("Enter the step value for smoothing [1 - 15]\n\t The higher the value, the smoother it is: "))
+    threshold = float(input("Enter the threshold value for automatic start point truncation [0 - 1]\n\t Typically 0.02:"))
+    dfFormatArgs = {"TimestampInMs": isInMs, "SmoothStepValue": smoothStepValue, "Threshold": threshold}
     
     # Setup Output Path
     my_path = os.path.realpath("")
@@ -610,7 +612,7 @@ def main():
     plotDisplacement(df, title, Total_Distance_Travelled, output_path)
 
 
-# In[ ]:
+# In[25]:
 
 
 uchoice = 1
