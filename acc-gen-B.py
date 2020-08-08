@@ -15,7 +15,7 @@
 
 # # 1) Import modules
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -38,7 +38,7 @@ from scipy.signal import lfilter
 # Function parameters:\
 # None
 
-# In[ ]:
+# In[2]:
 
 
 def getInputForColumns():
@@ -82,7 +82,7 @@ def getInputForColumns():
 # Function parameters:\
 # (String) a1 -- Column ID in String Format
 
-# In[ ]:
+# In[3]:
 
 
 def a1ToIndex(a1, isZeroIndex):
@@ -106,7 +106,7 @@ def a1ToIndex(a1, isZeroIndex):
 # |```output_path```|the path for output| |
 # 
 
-# In[ ]:
+# In[4]:
 
 
 def csv2df(file_name, title, output_path):
@@ -160,7 +160,7 @@ def csv2df(file_name, title, output_path):
 
 # ## Function to remove data for when train is stationary
 
-# In[ ]:
+# In[5]:
 
 
 def truncateStationaryValues(df):
@@ -196,7 +196,7 @@ def truncateStationaryValues(df):
 
 # ## Function to Generate Time Elapsed
 
-# In[ ]:
+# In[6]:
 
 
 def timeElapsed(df, TimestampInMs): 
@@ -213,7 +213,7 @@ def timeElapsed(df, TimestampInMs):
 
 # ## Function to Generate Time Interval
 
-# In[ ]:
+# In[7]:
 
 
 def timeInterval(df):
@@ -233,7 +233,7 @@ def timeInterval(df):
 # shift_value: the value to shift all acceleration values 
 # <p> in this application, the shift value from the experiment results, is approximately to be (initial accelration)/2</p>
 
-# In[ ]:
+# In[8]:
 
 
 def accAdjust(df):
@@ -268,7 +268,7 @@ def accAdjust(df):
 
 # ## Function to generate V-btw2
 
-# In[ ]:
+# In[9]:
 
 
 def dv(df):
@@ -285,7 +285,7 @@ def dv(df):
 
 # ## Function to generate V(t)
 
-# In[ ]:
+# In[10]:
 
 
 def vt(df):
@@ -303,7 +303,7 @@ def vt(df):
 
 # ## Function to generate S-btw2
 
-# In[ ]:
+# In[11]:
 
 
 def ds(df):
@@ -321,7 +321,7 @@ def ds(df):
 
 # ## Function to generate S(t)
 
-# In[ ]:
+# In[12]:
 
 
 def st(df):
@@ -339,7 +339,7 @@ def st(df):
 
 # ## Function to integrate all the functions in this section
 
-# In[ ]:
+# In[13]:
 
 
 def dfFormat(df, dfFormatArgs):
@@ -361,7 +361,7 @@ def dfFormat(df, dfFormatArgs):
 
 # ## Total Distance Travelled
 
-# In[ ]:
+# In[14]:
 
 
 def distance(df):
@@ -374,7 +374,7 @@ def distance(df):
 
 # ## Total Time Taken
 
-# In[ ]:
+# In[15]:
 
 
 def totalTime(df):
@@ -387,7 +387,7 @@ def totalTime(df):
 
 # ## Max Velocity
 
-# In[ ]:
+# In[16]:
 
 
 def maxVelocity(df):
@@ -403,16 +403,15 @@ def maxVelocity(df):
 # Variables: <br>
 # negative_acc_list: a list of the index of which the acceleration value is nagetive
 
-# In[ ]:
+# In[17]:
 
 
 def acc(df):
     '''Get the cut-off time for acceleration & Average Acceleration'''
     
     negative_acc_list = df[df["Acc-Y-Adjusted"] < 0].index.tolist()
-    # To avoid early cut-off
-    # set the threshhold to be 1/4 of total journey
-    while negative_acc_list[0] < 0.25*len(df):
+    # To avoid early cut-off set the threshhold to be 5% of total journey
+    while negative_acc_list[0] < 0.05*len(df):
         negative_acc_list = negative_acc_list[1:]
         
     CutOff_Time = df.iloc[negative_acc_list[0],1]
@@ -428,7 +427,7 @@ def acc(df):
 
 # ## Max Acceleration
 
-# In[ ]:
+# In[18]:
 
 
 def maxAcc(df):
@@ -441,7 +440,7 @@ def maxAcc(df):
 
 # ## Function to integrate all the functions in this section
 
-# In[ ]:
+# In[19]:
 
 
 def data(df):
@@ -467,7 +466,7 @@ def data(df):
 
 # ## Graph a-t
 
-# In[ ]:
+# In[20]:
 
 
 def plotAcc(df,title,CutOff_Time, output_path):
@@ -489,7 +488,7 @@ def plotAcc(df,title,CutOff_Time, output_path):
 
 # ## Graph v-t
 
-# In[ ]:
+# In[21]:
 
 
 def plotVelocity(df,title,Max_Velocity, output_path):
@@ -510,7 +509,7 @@ def plotVelocity(df,title,Max_Velocity, output_path):
 
 # ## Graph s-t
 
-# In[ ]:
+# In[22]:
 
 
 def plotDisplacement(df,title,Total_Distance_Travelled, output_path):
@@ -531,7 +530,7 @@ def plotDisplacement(df,title,Total_Distance_Travelled, output_path):
 
 # # 6) Calculating and Generating Output
 
-# In[ ]:
+# In[23]:
 
 
 def mkdir_p(mypath):
@@ -550,7 +549,7 @@ def mkdir_p(mypath):
 
 # ## Run it all (Main function)
 
-# In[ ]:
+# In[24]:
 
 
 def main():
@@ -606,14 +605,14 @@ def main():
     plotDisplacement(df, title, Total_Distance_Travelled, output_path)
 
 
-# In[ ]:
+# In[26]:
 
 
 uchoice = 1
-uchoice = int(input("Enter [1] to start and [0] to exit"))
+uchoice = int(input("Enter [1] to start and [0] to exit: "))
 while (uchoice == 1):
     main()
-    uchoice = int(input("Enter [1] to start and [0] to exit"))
+    uchoice = int(input("Enter [1] to start and [0] to exit: "))
 
 
 # In[ ]:
