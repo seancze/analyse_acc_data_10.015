@@ -1,8 +1,0 @@
-
-    # Total distance travelled: 631.4719156968716 m
-    # Total time taken: nan s
-    # Max velocity: 10.602318510514783 m/s
-    # Cut-off time for acceleration: 26.35 s
-    # Average acceleration: 0.2991014412825823 m/s^2
-    # Max acceleration: 0.527675175 m/s^2
-    
