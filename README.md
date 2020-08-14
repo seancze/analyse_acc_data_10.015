@@ -1,7 +1,7 @@
 # Acceleration Data Processing & Analysis
 
-**For 10.015 Module's 1D Project (2020)**
-Created by Sean, Elvis, Yijia, Yanisa,
+**For 10.015 Module's 1D Project (2020)**\
+Created by Sean, Elvis, Yijia, Yanisa,\
 Class of 2024
 
 For google sheets add-on, click [here](https://github.com/elviskasonlin/analyse_acc_data_gsheets) to access the github repository.
@@ -60,7 +60,7 @@ A sample output csv file and sample graphs have been provided under the folder "
 - For Windows: Check that the name of your csv files do not contain any of the following characters / \ : * ? " < > | (Reason: These characters cannot be used to name a file)
 
 
-### Acc-Individual: Processing Files Individual
+### Acc-Individual: Processing Files Individually
 
 1) Download and extract the repository into a folder of your choice. (Preferably at the same folder level as your data)
 2) Navigate to the folder/directory via the terminal/command prompt: ```cd <file_path>``` or ```dir <file_path>```
