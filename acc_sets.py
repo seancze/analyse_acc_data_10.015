@@ -185,33 +185,19 @@ def sortedDict(all_files):
 
 
 def truncateStationaryValues(df, Threshold, isInG):
-    # Currently using a rolling average n of 5. Hence the use of "3" as the start index in range.
-    # You can change the n to any odd number. If you choose "3", then the start index will be 1 and the end index will be 1.
-    # Future enhancements: Automate this functionality
+    # Currently using a rolling average n of 5.
     
     threshold = Threshold # Threshold is assigned here. Typically 0.02 if values are in m/s^2
-    
-    from copy import deepcopy
-    
-    acc_data = deepcopy(df.loc[:, "Average Y"].tolist())
-        
-    if (isInG):
-        for i, e in enumerate(acc_data):
-            acc_data[i] = -e*9.81
-    else:
-        for i, e in enumerate(acc_data):
-            acc_data[i] = -e
-    
-    j = 3
-    rolling_avg_prev = (acc_data[j-2] + acc_data[j-1] + acc_data[j] + acc_data[j+1] + acc_data[j+2])/5
-    rolling_avg_cur = 0
     truncate_index = 0
+    rolling_ave = df["Average Y"].rolling(window=5).mean().dropna()
+    if isInG:
+        rolling_ave *= -9.81
     
-    for i in range(3, len(df) - 3):
-        rolling_avg_cur = (acc_data[i-2] + acc_data[i-1] + acc_data[i] + acc_data[i+1] + acc_data[i+2])/5
-        delta = rolling_avg_cur - rolling_avg_prev
-        if (delta > threshold):
-            # print(i, delta, acc_data[i]) # For debugging
+    for i in range(0, len(rolling_ave)):
+        if (i+1) == len(rolling_ave):
+            return "Could not find a difference that is more than threshold. Try setting a smaller threshold value."
+        delta = abs(rolling_ave.iloc[i+1]) - abs(rolling_ave.iloc[i])
+        if delta > threshold:
             truncate_index = i
             break
     
@@ -290,14 +276,10 @@ def timeInterval(df):
 
 def accAdjust(df, smoothen_curve, format_acc):
     '''Generate the Acc-Y-Adjusted and take the shift value into account'''
-    
-    #index of Acc-Y-Adjusted: 7
 
     if format_acc == 'y':
         df["Average Y"] = df["Average Y"] * -9.81
     acc_Y = df["Average Y"]
-#     for i in range(len(df)):
-#         acc_Y.append(df.iloc[i,4]*9.8)
         
     # Filter to remove noise
     n = int(smoothen_curve)  # the larger n is, the smoother the curve will be
@@ -310,9 +292,6 @@ def accAdjust(df, smoothen_curve, format_acc):
     #shift value
     shift_value = df["Acc-Y-Adjusted"].mean()
     df["Acc-Y-Adjusted"] = df["Acc-Y-Adjusted"] - shift_value
-#     for i in range(len(df)):
-#         df.iloc[i,7] = df.iloc[i,7] - shift_value
-    
 
 
 # ## Function to generate V-btw2
