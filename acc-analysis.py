@@ -34,13 +34,31 @@ df = df.drop([2, 4, 11, 13, 16, 23, 24, 25, 26, 35, 41, 53, 68])
 above_ground = df[(df["Above Ground"]=="Yes") & (df["Distance Travelled (m)"] > 500)]
 below_ground = df[(df["Above Ground"]=="No") & (df["Distance Travelled (m)"] > 500)]
 
+# 67, 69, 70, 71, 72
+
+
+# In[ ]:
+
+
+# Just to init manual and automated variables
+manual = above_ground
+automated = below_ground
+
+
+# In[ ]:
+
+
+# To shift NEL line to 'above ground' as despite travelling below_ground it is manual; UPDATE 190920: Apparently, it is AUTOMATED
+# manual = above_ground.append(below_ground.iloc[15:19])
+# automated = below_ground.drop([67,69,70,71,72])
+
 
 # In[ ]:
 
 
 # To remove samples which still appear slightly anomalous and to analyse the subset of data where dist travelled is > 700m and less than 3000m
-below_ground_2 = below_ground[below_ground["Distance Travelled (m)"] < 3000]
-above_ground_2 = above_ground[above_ground["Distance Travelled (m)"] < 3000]
+automated_2 = automated[automated["Distance Travelled (m)"] < 3000]
+manual_2 = manual[manual["Distance Travelled (m)"] < 3000]
 
 
 # In[ ]:
@@ -48,60 +66,60 @@ above_ground_2 = above_ground[above_ground["Distance Travelled (m)"] < 3000]
 
 # To manually filter out anomalous readings
 
-# below_ground_2.sort_values(by='Total Time Taken (s)', ascending=True)
+# automated_2.sort_values(by='Total Time Taken (s)', ascending=True)
 
 
 # In[ ]:
 
 
 # Mean Acceleration
-bg2_y = below_ground_2["Mean Acceleration (ms^-2)"]
-ag2_y = above_ground_2["Mean Acceleration (ms^-2)"]
+auto_y = automated_2["Mean Acceleration (ms^-2)"]
+manual_y = manual_2["Mean Acceleration (ms^-2)"]
 
 # Total Distance
-bg2_x = below_ground_2["Distance Travelled (m)"]
-ag2_x = above_ground_2["Distance Travelled (m)"]
+auto_x = automated_2["Distance Travelled (m)"]
+manual_x = manual_2["Distance Travelled (m)"]
 
 # Total Time Taken
-bg2_t = below_ground_2["Total Time Taken (s)"]
-ag2_t = above_ground_2["Total Time Taken (s)"]
+auto_t = automated_2["Total Time Taken (s)"]
+manual_t = manual_2["Total Time Taken (s)"]
 
 # Max Velocity
-bg2_v = below_ground_2["Max Velocity (ms^-1)"]
-ag2_v = above_ground_2["Max Velocity (ms^-1)"]
+auto_v = automated_2["Max Velocity (ms^-1)"]
+manual_v = manual_2["Max Velocity (ms^-1)"]
 
 # Mean Velocity
-bg2_mv = below_ground_2["Distance Travelled (m)"] / below_ground_2["Total Time Taken (s)"]
-ag2_mv = above_ground_2["Distance Travelled (m)"] / above_ground_2["Total Time Taken (s)"]
+auto_mv = automated_2["Distance Travelled (m)"] / automated_2["Total Time Taken (s)"]
+manual_mv = manual_2["Distance Travelled (m)"] / manual_2["Total Time Taken (s)"]
 
 
 # In[ ]:
 
 
 # Obtain centroids
-bg_centroid = (sum(bg2_t) / len(bg2_t), sum(bg2_mv) / len(bg2_mv))
-ag_centroid = (sum(ag2_t) / len(ag2_t), sum(ag2_mv) / len(ag2_mv))
+auto_centroid = (sum(auto_t) / len(auto_t), sum(auto_y) / len(auto_y))
+manual_centroid = (sum(manual_t) / len(manual_t), sum(manual_y) / len(manual_y))
 
-plt.scatter(bg2_t, bg2_mv, c='b', label='Below Ground')
-plt.scatter(ag2_t, ag2_mv, c='r', label='Above Ground')
-plt.scatter(bg_centroid[0], bg_centroid[1], c='b', marker='x', s = 100, label='Centroid')
-plt.scatter(ag_centroid[0], ag_centroid[1], c='r', marker='x', s = 100, label='Centroid')
-plt.title("Velocity-Time Graph")
+plt.scatter(auto_t, auto_y, c='b', label='Automated')
+plt.scatter(manual_t, manual_y, c='r', label='Human Operated')
+plt.scatter(auto_centroid[0], auto_centroid[1], c='b', marker='x', s = 100, label='Automated Centroid')
+plt.scatter(manual_centroid[0], manual_centroid[1], c='r', marker='x', s = 100, label='Human Operated Centroid')
+plt.title("Acceleration-Time Graph")
 plt.xlabel('Total Time Taken (s)')
-plt.ylabel('Mean Velocity (ms^-1)')
+plt.ylabel('Mean Acceleration (ms^-2)')
 plt.legend(loc='best')
 plt.gcf().set_size_inches((10, 10))    
 plt.show()
 
-diff = bg_centroid[1] - ag_centroid[1]
+diff = auto_centroid[1] - manual_centroid[1]
 
-print(f"Mean Velocity (Below) - Mean Velocity (Above): {diff}")
+print(f"Automated Centroid - Manual Centroid: {diff}ms^-2")
 
-sns.regplot(bg2_t, bg2_mv, color = 'b')
-sns.regplot(ag2_t, ag2_mv, color = 'r')
+sns.regplot(auto_t, auto_mv, color = 'b')
+sns.regplot(manual_t, manual_mv, color = 'r')
 plt.xlabel("Total Time Taken (s)")
-plt.ylabel("Mean Velocity (ms^-1)")
-plt.title("Velocity-Time Graph")
+plt.ylabel("Mean Acceleration (ms^-2)")
+plt.title("Acceleration-Time Graph")
 plt.gcf().set_size_inches((10, 10)) 
 print("Trend is very similar")
 
@@ -109,21 +127,21 @@ print("Trend is very similar")
 # In[ ]:
 
 
-bg_centroid_2 = (sum(bg2_x) / len(bg2_x), sum(bg2_y) / len(bg2_y))
-ag_centroid_2 = (sum(ag2_x) / len(ag2_x), sum(ag2_y) / len(ag2_y))
+auto_centroid_2 = (sum(auto_x) / len(auto_x), sum(auto_y) / len(auto_y))
+manual_centroid_2 = (sum(manual_x) / len(manual_x), sum(manual_y) / len(manual_y))
 
 # Acceleration-Distance Graph
-plt.scatter(bg2_x, bg2_y, c='b', label='Below Ground')
-plt.scatter(ag2_x, ag2_y, c='r', label='Above Ground')
-plt.scatter(bg_centroid_2[0], bg_centroid_2[1], c='b', marker='x', s = 100, label='Centroid')
-plt.scatter(ag_centroid_2[0], ag_centroid_2[1], c='r', marker='x', s = 100, label='Centroid')
+plt.scatter(auto_x, auto_y, c='b', label='Below Ground')
+plt.scatter(manual_x, manual_y, c='r', label='Above Ground')
+plt.scatter(auto_centroid_2[0], auto_centroid_2[1], c='b', marker='x', s = 100, label='Centroid')
+plt.scatter(manual_centroid_2[0], manual_centroid_2[1], c='r', marker='x', s = 100, label='Centroid')
 plt.title('Acceleration-Distance Graph')
 plt.xlabel('Total Distance Travelled (m)')
 plt.ylabel('Mean Acceleration (ms^-2)')
 plt.legend(loc='best')
 plt.gcf().set_size_inches((10, 10))  
 plt.show()
-diff = bg_centroid_2[1] - ag_centroid_2[1]
+diff = auto_centroid_2[1] - manual_centroid_2[1]
 
 print(f"Mean Acceleration (Below) - Mean Acceleration (Above): {diff} [p-value = 21.0%]")
 
@@ -132,27 +150,27 @@ print(f"Mean Acceleration (Below) - Mean Acceleration (Above): {diff} [p-value =
 
 
 # Mean Time Taken
-mean_t_below = bg2_t.mean()
-mean_t_above = ag2_t.mean()
+mean_t_below = auto_t.mean()
+mean_t_above = manual_t.mean()
 
 # Mean Distance Travelled
-mean_d_below = bg2_x.mean()
-mean_d_above = ag2_x.mean()
+mean_d_below = auto_x.mean()
+mean_d_above = manual_x.mean()
 
 # Mean Velocity
-mean_v_below = sum(bg2_x) / sum(bg2_t)
-mean_v_above = sum(ag2_x) / sum(ag2_t)
+mean_v_below = sum(auto_x) / sum(auto_t)
+mean_v_above = sum(manual_x) / sum(manual_t)
 
 # Mean Acceleration
-mean_a_below = bg2_y.mean()
-mean_a_above = ag2_y.mean()
+mean_a_below = auto_y.mean()
+mean_a_above = manual_y.mean()
 
 print(
 f'''
 Taking samples where distance travelled is between 500m and 3000m:
 
-Number of samples below ground = {len(below_ground_2)}
-Number of samples above ground = {len(above_ground_2)}
+Number of samples below ground = {len(automated_2)}
+Number of samples above ground = {len(manual_2)}
 
 Mean t (Below) = {mean_t_below}
 Mean t (Above) = {mean_t_above}
@@ -179,48 +197,57 @@ However, it may be significantly affected by the time trains take to decelerate 
 # In[ ]:
 
 
+print((manual_pop_var_a/len(manual_2)) ** (1/2))
+print(manual_sigma_a)
+print((manual_pop_var_a/29) ** (1/2))
+print((manual_pop_var_a/len(manual_2)))
+
+
+# In[ ]:
+
+
 # Initialise variables (In same code block to prevent bugs)
 # Unbiased estimate of population mean
-ag_mean_v = sum(ag2_x) / sum(ag2_t)
-ag_mean_a = statistics.mean(ag2_y)
-bg_mean_v = sum(bg2_x) / sum(bg2_t)
-bg_mean_a = statistics.mean(bg2_y)
+manual_mean_v = sum(manual_x) / sum(manual_t)
+manual_mean_a = statistics.mean(manual_y)
+auto_mean_v = sum(auto_x) / sum(auto_t)
+auto_mean_a = statistics.mean(auto_y)
 
-# Sample Variance (AG: Mean v + Mean a)
-ag_sample_var_v = statistics.variance(ag2_v)
-ag_sample_var_a = statistics.variance(ag2_y)
+# Sample Variance (manual: Mean v + Mean a)
+manual_sample_var_v = statistics.variance(manual_v)
+manual_sample_var_a = statistics.variance(manual_y)
 
 # Unbiased estimate of population variance
-ag_pop_var_v = ag_sample_var_v * (len(above_ground_2) / (len(above_ground_2) - 1))
-ag_pop_var_a = ag_sample_var_a * (len(above_ground_2) / (len(above_ground_2) - 1))
+manual_pop_var_v = manual_sample_var_v * (len(manual_2) / (len(manual_2) - 1))
+manual_pop_var_a = manual_sample_var_a * (len(manual_2) / (len(manual_2) - 1))
 
 # Sigma
-ag_sigma_v = ag_pop_var_v ** (1/2)
-ag_sigma_a = ag_pop_var_a ** (1/2)
+manual_sigma_v = manual_pop_var_v ** (1/2)
+manual_sigma_a = manual_pop_var_a ** (1/2)
 
 
 # Mean Acceleration
 
-print(f"Above ground sample size: {len(above_ground_2)}, Below ground sample size: {len(below_ground_2)}")
+print(f"Above ground sample size: {len(manual_2)}, Below ground sample size: {len(automated_2)}")
 
 print(f''' 
 Traditionally, trains are human-operated. Hence our population variance and mean will be based off human-operated trains.
 Null Hypothesis: 
 Under the assumption that H_0 is true, taking automated trains has no effect on a train's mean acceleration.
 
-As our sample size n = 20 more than / equal to 20, by Central Limit Theorem, we can assume that the distribution of sample means is approximately Normal.
+As our sample size n = {len(manual_2)} more than / equal to 20, by Central Limit Theorem, we can assume that the distribution of sample means is approximately Normal.
 Thus, for human-operated trains,
-Unbiased estimate of pop mean = {ag_mean_a}
-Unbiased estimate of pop variance = {ag_pop_var_a}
+Unbiased estimate of pop mean = {manual_mean_a}
+Unbiased estimate of pop variance = {manual_pop_var_a}
 
-Distribution of sample mean X_bar = N({ag_mean_a}, {ag_pop_var_a/24})
+Distribution of sample mean X_bar = N({manual_mean_a}, {manual_pop_var_a/len(manual_2)})
 
-Sigma = {(ag_pop_var_a) ** 1/2}
+Sigma = {(manual_pop_var_a/len(manual_2)) ** (1/2)}
 
-Mean acceleration below ground = {bg_mean_a}
+Mean acceleration for automated trains = {auto_mean_a}
 
 Using the G.C.,
-Our p-value, P(X_bar > mean acceleration below ground) = 0.2098682982
+Our p-value, P(X_bar > mean acceleration for automated trains) = 0.3258347235
 
 Setting a 5% level of significance (0.05), 
 H_0 cannot be rejected.
@@ -236,19 +263,19 @@ Traditionally, trains are human-operated. Hence our population variance and mean
 Null Hypothesis: 
 Under the assumption that H_0 is true, automated and human-operated trains have the same mean velocity.
 
-As our sample size n = 20 more than / equal to 20, by Central Limit Theorem, we can assume that the distribution of sample means is approximately Normal.
+As our sample size n = {len(manual_2)} more than / equal to 20, by Central Limit Theorem, we can assume that the distribution of sample means is approximately Normal.
 Thus, for human-operated trains,
-Unbiased estimate of pop mean = {ag_mean_v}
-Unbiased estimate of pop variance = {ag_pop_var_v}
+Unbiased estimate of pop mean = {manual_mean_v}
+Unbiased estimate of pop variance = {manual_pop_var_v}
 
-Distribution of sample mean X_bar = N({ag_mean_v}, {ag_pop_var_v/24})
+Distribution of sample mean X_bar = N({manual_mean_v}, {manual_pop_var_v/len(manual_2)})
 
-Sigma = {(ag_pop_var_v/24) ** 1/2}
+Sigma = {(manual_pop_var_v/len(manual_2)) ** (1/2)}
 
-Mean velocity below ground = {bg_mean_v}
+Mean velocity for automated trains = {auto_mean_v}
 
 Using the G.C.,
-Our p-value, P(X_bar > mean velocity below ground) = 0.439472543
+Our p-value, P(X_bar > mean velocity for automated trains) = 0.439472543 [Need to recalculate]
 
 Since ,
 H_0 cannot be rejected. Our hypothesis is invalid.
@@ -266,14 +293,14 @@ H_0 cannot be rejected. Our hypothesis is invalid.
 #     if samp_mean > 0:
 #         print(len(s1[s1>samp_mean]))
 #         outliers = float(len(s1[s1>samp_mean])*100)/float(len(s1))
-#         print('Percentage of numbers larger than {} is {}%'.format(samp_mean, outliers))
-#         print(f'Percentage of numbers smaller than {samp_mean} is {100-outliers}%')
+#         print('Percentmanuale of numbers larger than {} is {}%'.format(samp_mean, outliers))
+#         print(f'Percentmanuale of numbers smaller than {samp_mean} is {100-outliers}%')
 #     if deltam == 0:
 #         deltam = abs(mu-samp_mean)
 #     if deltam > 0 :
 #         outliers = (float(len(s1[s1>(mu+deltam)]))
 #                     +float(len(s1[s1<(mu-deltam)])))*100.0/float(len(s1))
-#         print('Percentage of numbers further than the population mean of {} by +/-{} is {}%'.format(mu, deltam, outliers))
+#         print('Percentmanuale of numbers further than the population mean of {} by +/-{} is {}%'.format(mu, deltam, outliers))
 
 #     fig, ax = plt.subplots(figsize=(8,8))
 #     fig.suptitle('Normal Distribution: population_mean={}'.format(mu) )
