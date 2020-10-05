@@ -26,7 +26,7 @@ import csv
 import os.path
 from scipy.signal import lfilter
 
-from aux import *
+from aux_fn import *
 
 
 # # 2) Data Conversions

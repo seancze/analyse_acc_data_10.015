@@ -17,7 +17,8 @@ For google sheets add-on, click [here](https://github.com/elviskasonlin/analyse_
    - scipy
    - openpyxl
    - notebook
-   Run the following command to install to install all of the above you haven't: ```pip install pandas matplotlib scipy openpyxl notebook```
+   - xlrd
+   Run the following command to install to install all of the above you haven't: ```pip install pandas matplotlib scipy openpyxl notebook xlrd```
 
 ## How to Use (Running)
 
